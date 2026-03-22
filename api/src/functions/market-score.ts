@@ -1,14 +1,15 @@
 import { app, type HttpRequest, type HttpResponseInit, type InvocationContext } from "@azure/functions";
 import * as cache from "../lib/cache.js";
 import { isMarketOpen } from "../lib/marketHours.js";
-import { fetchSnapshot, fetchDailyBars, fetchIndexDailyBars, fetchVixSnapshot, fetchIndexSnapshot } from "../lib/polygon.js";
+import { fetchSnapshot, fetchDailyBars } from "../lib/polygon.js";
+import { fetchVixData, fetchTnxData, fetchDxyData } from "../lib/yahoo.js";
 import { fetchBreadthData } from "../lib/finviz.js";
-import { KEY_TICKERS, SECTOR_TICKERS, MACRO_TICKERS } from "../lib/constants.js";
+import { KEY_TICKERS, SECTOR_TICKERS } from "../lib/constants.js";
 import { computeVixData, scoreVolatility } from "../lib/scoring/volatility.js";
 import { buildSectorData, scoreMomentum } from "../lib/scoring/momentum.js";
 import { computeTrendData, scoreTrend } from "../lib/scoring/trend.js";
 import { scoreBreadth } from "../lib/scoring/breadth.js";
-import { computeMacroData, scoreMacro, computeFomcProximity } from "../lib/scoring/macro.js";
+import { computeMacroData, scoreMacro } from "../lib/scoring/macro.js";
 import { computeExecutionData, scoreExecution } from "../lib/scoring/executionWindow.js";
 import { computeQualityScore, computeDecision } from "../lib/scoring/composite.js";
 import { generateSummary } from "../lib/scoring/summary.js";
@@ -31,36 +32,23 @@ async function marketScoreHandler(
     ctx.log(`Computing market score (mode=${mode})...`);
 
     // ─── Parallel data fetching ────────────────────────────────
+    // Polygon for stocks, Yahoo Finance for indices (VIX, TNX, DXY)
 
     const [
       stockSnapshots,
-      vixSnapshot,
-      indexSnapshots,
+      vixYahoo,
+      tnxYahoo,
+      dxyYahoo,
       spyBars,
       qqqBars,
-      vixBars,
-      tnxBars,
-      dxyBars,
       breadthData,
     ] = await Promise.all([
       fetchSnapshot(KEY_TICKERS),
-      fetchVixSnapshot(),
-      fetchIndexSnapshot(["I:TNX", "I:DXY"]),
+      fetchVixData(),
+      fetchTnxData(),
+      fetchDxyData(),
       fetchDailyBars("SPY", 250),
       fetchDailyBars("QQQ", 60),
-      fetchDailyBars("VIXY", 300).then(async (bars) => {
-        // Try VIXY first (VIX ETF), fallback to VIX index
-        if (bars.length > 0) return bars;
-        return fetchIndexDailyBars("I:VIX", 300);
-      }),
-      fetchIndexDailyBars("I:TNX", 15).then(async (bars) => {
-        if (bars.length > 0) return bars;
-        return fetchDailyBars(MACRO_TICKERS.TNX_FALLBACK, 15);
-      }),
-      fetchIndexDailyBars("I:DXY", 15).then(async (bars) => {
-        if (bars.length > 0) return bars;
-        return fetchDailyBars(MACRO_TICKERS.DXY_FALLBACK, 15);
-      }),
       fetchBreadthData().catch((_e): BreadthData => {
         ctx.log("FinViz breadth fetch failed, using defaults");
         return {
@@ -70,11 +58,9 @@ async function marketScoreHandler(
       }),
     ]);
 
-    // ─── VIX ───────────────────────────────────────────────────
+    // ─── VIX (from Yahoo) ─────────────────────────────────────
 
-    const vixLevel = vixSnapshot?.level ?? 20;
-    const vixChange = vixSnapshot?.change ?? 0;
-    const vixData = computeVixData(vixLevel, vixChange, vixBars);
+    const vixData = computeVixData(vixYahoo.level, vixYahoo.change, vixYahoo.bars);
 
     // ─── Sectors ───────────────────────────────────────────────
 
@@ -85,15 +71,12 @@ async function marketScoreHandler(
     const trendData = computeTrendData(spyBars, qqqBars);
     const spyCloses = spyBars.map((b) => b.c);
 
-    // ─── Macro ─────────────────────────────────────────────────
+    // ─── Macro (TNX + DXY from Yahoo) ─────────────────────────
 
-    const macroData = computeMacroData(tnxBars, dxyBars);
-
-    // If index snapshots work, use those for current prices
-    const tnxSnap = indexSnapshots.get("I:TNX");
-    const dxySnap = indexSnapshots.get("I:DXY");
-    if (tnxSnap && tnxSnap.value > 0) macroData.tnx.price = Math.round(tnxSnap.value * 100) / 100;
-    if (dxySnap && dxySnap.value > 0) macroData.dxy.price = Math.round(dxySnap.value * 100) / 100;
+    const macroData = computeMacroData(tnxYahoo.bars, dxyYahoo.bars);
+    // Override prices with live Yahoo data
+    if (tnxYahoo.price > 0) macroData.tnx.price = Math.round(tnxYahoo.price * 100) / 100;
+    if (dxyYahoo.price > 0) macroData.dxy.price = Math.round(dxyYahoo.price * 100) / 100;
 
     // ─── Execution Window ──────────────────────────────────────
 
@@ -141,13 +124,27 @@ async function marketScoreHandler(
         });
       }
     }
-    // Add VIX
-    tickerPrices.unshift({
-      ticker: "VIX",
-      price: vixData.level,
-      change: vixData.change,
-      changePercent: vixData.change5d,
-    });
+    // Add VIX, TNX, DXY to ticker tape
+    tickerPrices.unshift(
+      {
+        ticker: "VIX",
+        price: vixData.level,
+        change: vixData.change,
+        changePercent: vixData.change5d,
+      },
+      {
+        ticker: "TNX",
+        price: macroData.tnx.price,
+        change: 0,
+        changePercent: macroData.tnx.change5d,
+      },
+      {
+        ticker: "DXY",
+        price: macroData.dxy.price,
+        change: 0,
+        changePercent: macroData.dxy.change5d,
+      },
+    );
 
     // ─── Build response ────────────────────────────────────────
 
