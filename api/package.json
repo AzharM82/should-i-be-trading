@@ -1,0 +1,17 @@
+{
+  "name": "should-i-be-trading-api",
+  "version": "1.0.0",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --color-t-bg: #0a0e17;
+  --color-t-surface: #111827;
+  --color-t-card: #151f2e;
+  --color-t-border: #1e2a3a;
+  --color-t-green: #00ff41;
+  --color-t-red: #ff3e3e;
+  --color-t-amber: #ffb700;
+  --color-t-blue: #00a8ff;
+  --color-t-text: #c8d6e5;
+  --color-t-muted: #576574;
+  --color-t-dim: #2d3748;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #0a0e17;
+  color: #c8d6e5;
+  font-family: "IBM Plex Mono", "Consolas", "Monaco", monospace;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Score circle animation */
+@keyframes score-fill {
+  from { stroke-dashoffset: 283; }
+}
+
+/* Ticker tape scroll */
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-tape {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+/* Pulse animation for LIVE indicator */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.live-dot {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+/* Skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #151f2e 25%, #1e2a3a 50%, #151f2e 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
