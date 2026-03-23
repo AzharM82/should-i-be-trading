@@ -20,14 +20,23 @@ function timeAgo(iso: string): string {
 
 export function TopBar({ data, mode, onModeChange, onRefresh, loading }: TopBarProps) {
   return (
-    <div className="bg-t-surface border-b border-t-border">
+    <div className="border-b-2 border-t-text">
+      {/* Masthead */}
+      <div className="text-center py-3 border-b border-t-border">
+        <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif" }} className="text-3xl font-black tracking-tight text-t-text">
+          Should I Be Trading?
+        </h1>
+        <div className="text-t-muted text-[11px] mt-1 tracking-widest uppercase">
+          Market Intelligence Report
+        </div>
+      </div>
+
       {/* Ticker Tape */}
       {data && <TickerTape tickers={data.tickerPrices} />}
 
       {/* Controls bar */}
-      <div className="flex items-center justify-between px-4 py-2">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-t-border bg-t-surface">
         <div className="flex items-center gap-4">
-          <span className="text-t-blue font-bold text-sm tracking-wider">SHOULD I BE TRADING?</span>
           <ModeToggle mode={mode} onChange={onModeChange} />
         </div>
 
@@ -37,11 +46,11 @@ export function TopBar({ data, mode, onModeChange, onRefresh, loading }: TopBarP
             {data?.marketOpen ? (
               <>
                 <span className="live-dot w-2 h-2 rounded-full bg-t-green inline-block" />
-                <span className="text-t-green text-xs font-medium">LIVE</span>
+                <span className="text-t-green text-xs font-semibold">LIVE</span>
               </>
             ) : (
               <>
-                <span className="w-2 h-2 rounded-full bg-t-muted inline-block" />
+                <span className="w-2 h-2 rounded-full bg-t-dim inline-block" />
                 <span className="text-t-muted text-xs">CLOSED</span>
               </>
             )}
@@ -58,7 +67,7 @@ export function TopBar({ data, mode, onModeChange, onRefresh, loading }: TopBarP
           <button
             onClick={onRefresh}
             disabled={loading}
-            className="text-t-muted hover:text-t-blue text-xs border border-t-border rounded px-2 py-1 transition-colors disabled:opacity-50"
+            className="text-t-muted hover:text-t-text text-xs border border-t-border rounded px-2 py-1 transition-colors disabled:opacity-50"
           >
             {loading ? "..." : "REFRESH"}
           </button>

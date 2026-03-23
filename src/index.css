@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-t-bg: #0a0e17;
-  --color-t-surface: #111827;
-  --color-t-card: #151f2e;
-  --color-t-border: #1e2a3a;
-  --color-t-green: #00ff41;
-  --color-t-red: #ff3e3e;
-  --color-t-amber: #ffb700;
-  --color-t-blue: #00a8ff;
-  --color-t-text: #c8d6e5;
-  --color-t-muted: #576574;
-  --color-t-dim: #2d3748;
+  --color-t-bg: #faf7f2;
+  --color-t-surface: #f0ebe3;
+  --color-t-card: #ffffff;
+  --color-t-border: #d4cfc6;
+  --color-t-green: #1a6b3c;
+  --color-t-red: #a8221a;
+  --color-t-amber: #8a6d1b;
+  --color-t-blue: #2c5282;
+  --color-t-text: #1a1a1a;
+  --color-t-muted: #6b6459;
+  --color-t-dim: #b8b1a6;
 }
 
 * {
@@ -21,9 +21,9 @@
 body {
   margin: 0;
   padding: 0;
-  background: #0a0e17;
-  color: #c8d6e5;
-  font-family: "IBM Plex Mono", "Consolas", "Monaco", monospace;
+  background: #faf7f2;
+  color: #1a1a1a;
+  font-family: "IBM Plex Mono", "Georgia", "Times New Roman", serif;
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
 }
@@ -60,8 +60,19 @@ body {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #151f2e 25%, #1e2a3a 50%, #151f2e 75%);
+  background: linear-gradient(90deg, #f0ebe3 25%, #e5dfd6 50%, #f0ebe3 75%);
   background-size: 200px 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: 4px;
+}
+
+/* Newspaper horizontal rules */
+.newspaper-rule {
+  border-top: 2px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  height: 5px;
+}
+
+.newspaper-rule-thin {
+  border-top: 1px solid #d4cfc6;
 }

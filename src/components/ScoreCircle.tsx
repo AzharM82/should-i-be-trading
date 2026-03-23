@@ -11,9 +11,9 @@ export function ScoreCircle({ score, size = 180, label }: ScoreCircleProps) {
   const center = size / 2;
 
   let color: string;
-  if (score >= 65) color = "#00ff41";
-  else if (score >= 40) color = "#ffb700";
-  else color = "#ff3e3e";
+  if (score >= 65) color = "#1a6b3c";
+  else if (score >= 40) color = "#8a6d1b";
+  else color = "#a8221a";
 
   return (
     <div className="flex flex-col items-center">
@@ -24,7 +24,7 @@ export function ScoreCircle({ score, size = 180, label }: ScoreCircleProps) {
           cy={center}
           r={radius}
           fill="none"
-          stroke="#1e2a3a"
+          stroke="#d4cfc6"
           strokeWidth="8"
         />
         {/* Score arc */}

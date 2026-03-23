@@ -14,13 +14,13 @@ export function TickerTape({ tickers }: TickerTapeProps) {
   const items = [...tickers, ...tickers];
 
   return (
-    <div className="bg-t-bg/50 border-b border-t-border overflow-hidden h-7 flex items-center">
+    <div className="bg-t-surface border-b border-t-border overflow-hidden h-7 flex items-center">
       <div className="ticker-tape flex gap-6 whitespace-nowrap">
         {items.map((t, i) => (
           <span key={`${t.ticker}-${i}`} className="flex items-center gap-1.5 text-xs">
-            <span className="text-t-muted font-medium">{t.ticker}</span>
-            <span className="text-t-text">{t.price.toFixed(2)}</span>
-            <span className={t.changePercent >= 0 ? "text-t-green" : "text-t-red"}>
+            <span className="text-t-text font-semibold">{t.ticker}</span>
+            <span className="text-t-muted">{t.price.toFixed(2)}</span>
+            <span className={t.changePercent >= 0 ? "text-t-green font-semibold" : "text-t-red font-semibold"}>
               {t.changePercent >= 0 ? "+" : ""}{t.changePercent.toFixed(2)}%
             </span>
           </span>

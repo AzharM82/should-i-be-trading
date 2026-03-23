@@ -1,8 +1,14 @@
 export function LoadingSkeleton() {
   return (
     <div className="min-h-screen bg-t-bg p-3 space-y-3">
+      {/* Masthead skeleton */}
+      <div className="text-center py-4">
+        <div className="skeleton h-8 w-80 mx-auto rounded" />
+        <div className="skeleton h-3 w-48 mx-auto mt-2 rounded" />
+      </div>
+
       {/* Top bar skeleton */}
-      <div className="skeleton h-10 w-full rounded" />
+      <div className="skeleton h-8 w-full rounded" />
 
       {/* Hero + Summary row */}
       <div className="grid grid-cols-12 gap-3">

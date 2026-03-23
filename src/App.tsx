@@ -97,8 +97,9 @@ export function App() {
         <ScoringBreakdown data={data} />
 
         {/* Footer */}
-        <div className="text-center text-t-dim text-[10px] py-2">
-          SHOULD I BE TRADING? v1.0 — {data.mode.toUpperCase()} MODE — Data: Polygon.io + FinViz Elite
+        <div className="newspaper-rule mt-4" />
+        <div className="text-center text-t-muted text-[10px] py-3 italic" style={{ fontFamily: "'Source Serif 4', Georgia, serif" }}>
+          Should I Be Trading? v1.0 — {data.mode.toUpperCase()} MODE — Data: Polygon.io + FinViz Elite + Yahoo Finance
         </div>
       </main>
     </div>

@@ -9,9 +9,12 @@ export function SectorHeatmap({ sectors }: Props) {
   const maxAbs = Math.max(...sorted.map((s) => Math.abs(s.changePercent)), 0.5);
 
   return (
-    <div className="bg-t-card border border-t-border rounded-lg overflow-hidden">
-      <div className="px-4 py-2.5 border-b border-t-border bg-t-surface">
-        <span className="text-xs font-semibold uppercase tracking-wider text-t-muted">
+    <div className="bg-t-card border border-t-border rounded overflow-hidden">
+      <div className="px-4 py-2.5 border-b border-t-border">
+        <span
+          className="text-xs font-bold uppercase tracking-widest text-t-text"
+          style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+        >
           Sector Performance
         </span>
       </div>
@@ -22,15 +25,15 @@ export function SectorHeatmap({ sectors }: Props) {
 
           return (
             <div key={s.ticker} className="flex items-center gap-2 text-xs">
-              <span className="w-10 text-t-muted font-medium shrink-0">{s.ticker}</span>
-              <div className="flex-1 h-5 bg-t-bg rounded overflow-hidden relative">
+              <span className="w-10 text-t-text font-semibold shrink-0">{s.ticker}</span>
+              <div className="flex-1 h-5 bg-t-surface rounded overflow-hidden relative">
                 <div
                   className={`h-full rounded transition-all duration-500 ${
-                    isPositive ? "bg-t-green/30" : "bg-t-red/30"
+                    isPositive ? "bg-t-green/20" : "bg-t-red/20"
                   }`}
                   style={{ width: `${width}%` }}
                 />
-                <span className={`absolute right-1 top-0.5 text-[10px] font-medium ${
+                <span className={`absolute right-1 top-0.5 text-[10px] font-semibold ${
                   isPositive ? "text-t-green" : "text-t-red"
                 }`}>
                   {isPositive ? "+" : ""}{s.changePercent.toFixed(2)}%
