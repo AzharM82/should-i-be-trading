@@ -13,6 +13,7 @@ import { SectorHeatmap } from "./components/SectorHeatmap.js";
 import { MacroPanel } from "./components/MacroPanel.js";
 import { ExecutionWindow } from "./components/ExecutionWindow.js";
 import { ScoringBreakdown } from "./components/ScoringBreakdown.js";
+import { TrendHistory } from "./components/TrendHistory.js";
 import { LoadingSkeleton } from "./components/LoadingSkeleton.js";
 
 export function App() {
@@ -57,23 +58,23 @@ export function App() {
       <AlertBanner fomc={data.macro.fomcProximity} />
 
       {/* Main Content */}
-      <main className="p-3 space-y-3">
+      <main className="p-3 space-y-2">
         {/* Hero + Summary Row */}
-        <div className="grid grid-cols-12 gap-3">
-          <div className="col-span-4">
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-3">
             <HeroPanel
               decision={data.decision}
               qualityScore={data.qualityScore}
               executionScore={data.executionScore}
             />
           </div>
-          <div className="col-span-8">
+          <div className="col-span-9">
             <SummaryBanner summary={data.summary} decision={data.decision} />
           </div>
         </div>
 
         {/* Category Panels Row */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-2">
           <VolatilityPanel data={data.volatility} />
           <TrendPanel data={data.trend} />
           <BreadthPanel data={data.breadth} />
@@ -81,7 +82,7 @@ export function App() {
         </div>
 
         {/* Sector Heatmap + Macro + Execution Row */}
-        <div className="grid grid-cols-12 gap-3">
+        <div className="grid grid-cols-12 gap-2">
           <div className="col-span-6">
             <SectorHeatmap sectors={data.momentum.sectors} />
           </div>
@@ -93,8 +94,15 @@ export function App() {
           </div>
         </div>
 
-        {/* Scoring Breakdown */}
-        <ScoringBreakdown data={data} />
+        {/* 7-Day Trend + Scoring Breakdown Row */}
+        <div className="grid grid-cols-12 gap-2">
+          <div className="col-span-5">
+            <TrendHistory mode={mode} />
+          </div>
+          <div className="col-span-7">
+            <ScoringBreakdown data={data} />
+          </div>
+        </div>
 
         {/* Footer */}
         <div className="newspaper-rule mt-4" />

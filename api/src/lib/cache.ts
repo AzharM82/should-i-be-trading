@@ -28,6 +28,8 @@ export function clear(): void {
 // FinViz data is slow to fetch, cache longer
 const TTL_OVERRIDES: Record<string, number> = {
   "finviz-breadth": 300_000, // 5 minutes
+  "market-history-swing": 300_000,
+  "market-history-day": 300_000,
 };
 
 function getTTL(key: string): number {

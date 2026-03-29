@@ -16,30 +16,26 @@ export function HeroPanel({ decision, qualityScore, executionScore }: HeroPanelP
   const style = DECISION_STYLES[decision];
 
   return (
-    <div className={`${style.bg} border-2 ${style.border} rounded p-6 flex flex-col items-center gap-4`}>
+    <div className={`${style.bg} border-2 ${style.border} rounded p-4 flex flex-col items-center gap-3 h-full justify-center`}>
       {/* Decision Badge */}
       <div
-        className={`${style.text} text-3xl font-black tracking-wider`}
+        className={`${style.text} text-2xl font-black tracking-wider`}
         style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
       >
         {style.label}
       </div>
 
       {/* Score Circles */}
-      <div className="flex gap-8 items-center">
-        <div className="relative">
-          <ScoreCircle score={qualityScore} size={160} label="Market Quality" />
-        </div>
-        <div className="relative">
-          <ScoreCircle score={executionScore} size={100} label="Execution" />
-        </div>
+      <div className="flex gap-4 items-center">
+        <ScoreCircle score={qualityScore} size={120} label="Quality" />
+        <ScoreCircle score={executionScore} size={80} label="Execution" />
       </div>
 
       {/* Decision guidance */}
-      <div className="text-t-muted text-xs text-center italic" style={{ fontFamily: "'Source Serif 4', Georgia, serif" }}>
-        {decision === "YES" && "Full position sizing. Press risk on A+ setups."}
-        {decision === "CAUTION" && "Half size only. A+ setups with tight stops."}
-        {decision === "NO" && "Preserve capital. Wait for better conditions."}
+      <div className="text-t-muted text-[10px] text-center italic" style={{ fontFamily: "'Source Serif 4', Georgia, serif" }}>
+        {decision === "YES" && "Full size. Press A+ setups."}
+        {decision === "CAUTION" && "Half size. A+ setups, tight stops."}
+        {decision === "NO" && "Preserve capital. Wait."}
       </div>
     </div>
   );

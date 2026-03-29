@@ -37,13 +37,25 @@ export function computeQualityScore(
   trend: number,
   breadth: number,
   macro: number,
-  _mode: TradingMode,
+  mode: TradingMode,
 ): number {
+  // Day trading: volatility & momentum matter more (intraday moves)
+  // Swing trading: trend & breadth matter more (multi-day positioning)
+  if (mode === "day") {
+    return Math.round(
+      volatility * 0.30 +
+      momentum * 0.30 +
+      trend * 0.15 +
+      breadth * 0.10 +
+      macro * 0.15
+    );
+  }
+  // Swing mode
   return Math.round(
-    volatility * 0.25 +
-    momentum * 0.25 +
-    trend * 0.20 +
-    breadth * 0.20 +
+    volatility * 0.20 +
+    momentum * 0.20 +
+    trend * 0.25 +
+    breadth * 0.25 +
     macro * 0.10
   );
 }

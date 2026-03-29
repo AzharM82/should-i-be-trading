@@ -91,6 +91,21 @@ async function marketScoreHandler(
     const macroResult = scoreMacro(macroData, mode);
     const executionResult = scoreExecution(executionData);
 
+    // Set mode-specific weights for display
+    if (mode === "day") {
+      volatilityResult.weight = 0.30;
+      momentumResult.weight = 0.30;
+      trendResult.weight = 0.15;
+      breadthResult.weight = 0.10;
+      macroResult.weight = 0.15;
+    } else {
+      volatilityResult.weight = 0.20;
+      momentumResult.weight = 0.20;
+      trendResult.weight = 0.25;
+      breadthResult.weight = 0.25;
+      macroResult.weight = 0.10;
+    }
+
     const qualityScore = computeQualityScore(
       volatilityResult.score,
       momentumResult.score,
