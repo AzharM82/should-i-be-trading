@@ -24,7 +24,7 @@ export function TopBar({ data, mode, onModeChange, onRefresh, loading }: TopBarP
       {/* Masthead */}
       <div className="text-center py-3 border-b border-t-border">
         <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif" }} className="text-3xl font-black tracking-tight text-t-text">
-          Should I Be Trading?
+          What Should I Be Trading?
         </h1>
         <div className="text-t-muted text-[11px] mt-1 tracking-widest uppercase">
           Market Intelligence Report

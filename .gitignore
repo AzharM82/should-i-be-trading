@@ -7,3 +7,7 @@ api/.env
 api/local.settings.json
 *.log
 .vite
+.azurite-test/
+.lavish/
+preview.html
+src/preview.tsx
