@@ -9,3 +9,5 @@ api/local.settings.json
 .vite
 .azurite-test/
 .lavish/
+preview.html
+src/preview.tsx
