@@ -4,6 +4,7 @@ import { useMarketData } from "./hooks/useMarketData.js";
 import { TopBar } from "./components/TopBar.js";
 import { AlertBanner } from "./components/AlertBanner.js";
 import { HeroPanel } from "./components/HeroPanel.js";
+import { PosturePanel } from "./components/PosturePanel.js";
 import { SummaryBanner } from "./components/SummaryBanner.js";
 import { VolatilityPanel } from "./components/VolatilityPanel.js";
 import { TrendPanel } from "./components/TrendPanel.js";
@@ -13,6 +14,7 @@ import { SectorHeatmap } from "./components/SectorHeatmap.js";
 import { MacroPanel } from "./components/MacroPanel.js";
 import { ExecutionWindow } from "./components/ExecutionWindow.js";
 import { ScoringBreakdown } from "./components/ScoringBreakdown.js";
+import { FeedbackSection } from "./components/FeedbackSection.js";
 import { TrendHistory } from "./components/TrendHistory.js";
 import { LoadingSkeleton } from "./components/LoadingSkeleton.js";
 
@@ -59,7 +61,7 @@ export function App() {
 
       {/* Main Content */}
       <main className="p-3 space-y-2">
-        {/* Hero + Summary Row */}
+        {/* Hero + Posture + Summary Row */}
         <div className="grid grid-cols-12 gap-2">
           <div className="col-span-3">
             <HeroPanel
@@ -68,7 +70,15 @@ export function App() {
               executionScore={data.executionScore}
             />
           </div>
-          <div className="col-span-9">
+          <div className="col-span-4">
+            <PosturePanel
+              posture={data.posture}
+              mode={data.mode}
+              qualityScore={data.qualityScore}
+              executionScore={data.executionScore}
+            />
+          </div>
+          <div className="col-span-5">
             <SummaryBanner summary={data.summary} decision={data.decision} />
           </div>
         </div>
@@ -93,6 +103,9 @@ export function App() {
             <ExecutionWindow data={data.execution} />
           </div>
         </div>
+
+        {/* Feedback Loop: Mirror + My Trades */}
+        <FeedbackSection data={data} />
 
         {/* 7-Day Trend + Scoring Breakdown Row */}
         <div className="grid grid-cols-12 gap-2">

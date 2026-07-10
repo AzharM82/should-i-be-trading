@@ -12,7 +12,10 @@ import { scoreBreadth } from "../lib/scoring/breadth.js";
 import { computeMacroData, scoreMacro } from "../lib/scoring/macro.js";
 import { computeExecutionData, scoreExecution } from "../lib/scoring/executionWindow.js";
 import { computeQualityScore, computeDecision } from "../lib/scoring/composite.js";
+import { computePosture, applyCalibration } from "../lib/scoring/posture.js";
 import { generateSummary } from "../lib/scoring/summary.js";
+import { listTrades } from "../lib/tradeLog.js";
+import { computeCalibration, MIN_SAMPLE } from "../lib/calibration.js";
 import type { MarketScoreResponse, TradingMode, BreadthData } from "../lib/types.js";
 
 async function marketScoreHandler(
@@ -179,8 +182,34 @@ async function marketScoreHandler(
       macro: macroResult,
       execution: executionResult,
 
+      posture: computePosture({
+        decision,
+        executionScore: executionResult.score,
+        breadthScore: breadthResult.score,
+        spyPrice: trendResult.spy.price,
+        ma50: trendResult.spy.ma50,
+        regime: trendResult.spy.regime,
+        rsi14: trendResult.spy.rsi14,
+        pctPositive: momentumResult.pctPositive,
+        vixLevel: vixData.level,
+        vixPercentile: vixData.percentile,
+      }),
+
       tickerPrices,
     };
+
+    // Adaptive size blend: if the user's own history in this regime is poor
+    // (and has a real sample), step the recommendation down. Degrades to the
+    // rule-based posture if storage isn't configured or has no data.
+    try {
+      const cal = computeCalibration(await listTrades());
+      const bucket = cal.byRegime.find(
+        (b) => b.mode === mode && b.bias === response.posture.bias,
+      );
+      response.posture = applyCalibration(response.posture, bucket, MIN_SAMPLE);
+    } catch (e) {
+      ctx.log("Calibration unavailable, using rule-based posture:", e instanceof Error ? e.message : e);
+    }
 
     response.summary = generateSummary(response);
 

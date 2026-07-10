@@ -75,6 +75,58 @@ export interface CategoryScore {
   details: string;
 }
 
+export interface TradePosture {
+  size: "FULL" | "HALF" | "QUARTER" | "NONE";
+  sizePct: number; // 0 | 25 | 50 | 100
+  instrument: "OPTIONS" | "STOCK" | "SPREADS" | "CASH";
+  direction: "CALLS" | "PUTS" | "NEITHER";
+  bias: "BULLISH" | "BEARISH" | "NEUTRAL";
+  confidence: "HIGH" | "MEDIUM" | "LOW";
+  headline: string;
+  rationale: string;
+}
+
+// ─── Trade log (feedback loop) ─────────────────────────────────────
+export interface TradeRecord {
+  id: string;
+  openedAt: string;
+  status: "OPEN" | "CLOSED";
+
+  // What YOU actually did
+  ticker: string;
+  dirTaken: "CALLS" | "PUTS" | "SHARES";
+  sizeUsedPct: number; // 0-100, % of account you deployed
+  mode: "swing" | "day";
+
+  // What the TOOL recommended at open (snapshot)
+  recSize: TradePosture["size"];
+  recSizePct: number;
+  recInstrument: TradePosture["instrument"];
+  recDirection: TradePosture["direction"];
+  recBias: TradePosture["bias"];
+  decision: "YES" | "CAUTION" | "NO";
+  qualityScore: number;
+  execScore: number;
+  regime: string;
+  vixLevel: number;
+
+  // Outcome (null until closed)
+  pnl: number | null;        // dollars
+  rMultiple: number | null;  // R
+  win: boolean | null;
+  notes: string;
+  closedAt: string | null;
+}
+
+export type NewTradeInput = Omit<TradeRecord, "id" | "openedAt" | "status" | "pnl" | "rMultiple" | "win" | "notes" | "closedAt">;
+
+export interface CloseTradeInput {
+  pnl?: number | null;
+  rMultiple?: number | null;
+  win?: boolean | null;
+  notes?: string;
+}
+
 export interface MarketScoreResponse {
   decision: "YES" | "CAUTION" | "NO";
   qualityScore: number;
@@ -90,6 +142,8 @@ export interface MarketScoreResponse {
   breadth: CategoryScore & BreadthData;
   macro: CategoryScore & MacroData;
   execution: CategoryScore & ExecutionData;
+
+  posture: TradePosture;
 
   tickerPrices: Array<{ ticker: string; price: number; change: number; changePercent: number }>;
 }

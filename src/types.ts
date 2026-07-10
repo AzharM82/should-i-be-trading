@@ -19,6 +19,65 @@ export interface CategoryScore {
   details: string;
 }
 
+export interface TradePosture {
+  size: "FULL" | "HALF" | "QUARTER" | "NONE";
+  sizePct: number;
+  instrument: "OPTIONS" | "STOCK" | "SPREADS" | "CASH";
+  direction: "CALLS" | "PUTS" | "NEITHER";
+  bias: "BULLISH" | "BEARISH" | "NEUTRAL";
+  confidence: "HIGH" | "MEDIUM" | "LOW";
+  headline: string;
+  rationale: string;
+}
+
+export interface TradeRecord {
+  id: string;
+  openedAt: string;
+  status: "OPEN" | "CLOSED";
+  ticker: string;
+  dirTaken: "CALLS" | "PUTS" | "SHARES";
+  sizeUsedPct: number;
+  mode: "swing" | "day";
+  recSize: TradePosture["size"];
+  recSizePct: number;
+  recInstrument: TradePosture["instrument"];
+  recDirection: TradePosture["direction"];
+  recBias: TradePosture["bias"];
+  decision: "YES" | "CAUTION" | "NO";
+  qualityScore: number;
+  execScore: number;
+  regime: string;
+  vixLevel: number;
+  pnl: number | null;
+  rMultiple: number | null;
+  win: boolean | null;
+  notes: string;
+  closedAt: string | null;
+}
+
+export interface BucketStat {
+  count: number;
+  totalPnl: number;
+  avgPnl: number;
+  winRate: number;
+  avgR: number | null;
+}
+
+export interface RegimeBucket extends BucketStat {
+  key: string;
+  mode: "swing" | "day";
+  bias: TradePosture["bias"];
+  edge: "GOOD" | "POOR" | "NEUTRAL" | "INSUFFICIENT";
+}
+
+export interface CalibrationResult {
+  totalClosed: number;
+  followed: BucketStat;
+  exceeded: BucketStat;
+  byRegime: RegimeBucket[];
+  headlines: string[];
+}
+
 export interface MacroFomc {
   daysUntil: number;
   nextDate: string;
@@ -70,6 +129,8 @@ export interface MarketScoreResponse {
     pullbacksBought: number;
     followThrough: number;
   };
+
+  posture: TradePosture;
 
   tickerPrices: Array<{
     ticker: string;

@@ -7,3 +7,5 @@ api/.env
 api/local.settings.json
 *.log
 .vite
+.azurite-test/
+.lavish/
